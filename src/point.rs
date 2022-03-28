@@ -48,11 +48,11 @@ impl Point {
         while col > 0 {
             let high_place = match col % 26 {
                 0 => b'Z',
-                _ => ((col-1) % 26) as u8 + b'A'
+                _ => ((col - 1) % 26) as u8 + b'A'
             } as char;
             stack.push(high_place);
 
-            col -= (col-1) % 26;
+            col -= (col - 1) % 26;
             col /= 26;
         }
 
@@ -99,7 +99,10 @@ impl FromStr for Point {
         }
         let column_index = Point::column_name_to_index(&column_name)?;
 
-        let row = chars.collect::<String>().parse::<usize>().map_err(|e| format!("{e}"))?;
+        let row = chars
+            .collect::<String>()
+            .parse::<usize>()
+            .map_err(|e| format!("{e}"))?;
 
         if row == 0 {
             return Err("Row cannot be 0".to_string());

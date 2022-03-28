@@ -2,20 +2,20 @@
 mod tests;
 
 use crate::point::Point;
-use std::str::FromStr;
 use std::fmt::Display;
+use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Rectangle {
     pub top_left: Point,
-    pub bottom_right: Point,
+    pub bottom_right: Point
 }
 
 impl Rectangle {
     pub fn new(top_left: Point, bottom_right: Point) -> Rectangle {
         Rectangle {
             top_left,
-            bottom_right,
+            bottom_right
         }
     }
 }
@@ -32,7 +32,10 @@ impl FromStr for Rectangle {
         let top_left = Point::from_str(top_left)?;
         let bottom_right = Point::from_str(bottom_right)?;
 
-        Ok(Rectangle { top_left, bottom_right })
+        Ok(Rectangle {
+            top_left,
+            bottom_right
+        })
     }
 }
 
