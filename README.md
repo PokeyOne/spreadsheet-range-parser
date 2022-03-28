@@ -1,2 +1,2 @@
-# spreasheet-range-parser
+# Spreadsheet Range Parser
 Parse spread sheet range and cell indicators
