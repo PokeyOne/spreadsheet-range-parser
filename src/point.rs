@@ -39,7 +39,7 @@ impl Point {
     /// assert_eq!(Point::new(0, 18277).column_name(), "ZZZ");
     /// ```
     pub fn column_name(&self) -> String {
-        let mut low_place = ((self.col % 26) as u8 + b'A') as char;
+        let low_place = ((self.col % 26) as u8 + b'A') as char;
 
         let mut stack = Vec::new();
         stack.push(low_place);
