@@ -2,7 +2,9 @@
 mod tests;
 
 use std::fmt::Display;
+use std::str::FromStr;
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct Point {
     pub row: usize,
     pub col: usize
@@ -50,6 +52,54 @@ impl Point {
 
         stack.reverse();
         stack.into_iter().collect()
+    }
+
+    pub fn column_name_to_index(name: &str) -> Result<usize, String> {
+        let mut value = 0;
+
+        let mut chars = name.chars().rev();
+        if let Some(first_char) = chars.next() {
+            value += first_char as usize - 'A' as usize;
+        } else {
+            return Err("Empty column name".to_string());
+        }
+
+        let mut current_place = 1;
+        for c in chars {
+            value += ((c as usize - 'A' as usize) + 1) * 26_usize.pow(current_place);
+            current_place += 1;
+        }
+
+        Ok(value)
+    }
+}
+
+impl FromStr for Point {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Point, String> {
+        let mut chars = s.chars().peekable();
+
+        let mut column_name = String::new();
+        while let Some(c) = chars.peek().copied() {
+            if c.is_ascii_uppercase() {
+                column_name.push(c);
+            } else if c.is_ascii_lowercase() {
+                column_name.push(c.to_ascii_uppercase());
+            } else {
+                break;
+            }
+            chars.next();
+        }
+        let column_index = Point::column_name_to_index(&column_name)?;
+
+        let row = chars.collect::<String>().parse::<usize>().map_err(|e| format!("{e}"))?;
+
+        if row == 0 {
+            return Err("Row cannot be 0".to_string());
+        }
+
+        Ok(Point::new(row - 1, column_index))
     }
 }
 
