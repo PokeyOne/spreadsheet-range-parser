@@ -4,9 +4,15 @@ mod tests;
 use std::fmt::Display;
 use std::str::FromStr;
 
+/// A specific cell in a spreadsheet.
+///
+/// For example, A1 is the top-left cell and would be represented as
+/// `Point::new(0, 0)`. B2 would be `Point::new(1, 1)`.
 #[derive(Debug, PartialEq, Clone)]
 pub struct Point {
+    /// The row **index** of the cell.
     pub row: usize,
+    /// The column **index** of the cell.
     pub col: usize
 }
 
