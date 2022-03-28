@@ -55,6 +55,6 @@ impl Point {
 
 impl Display for Point {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        write!(f, "{}{}", self.column_name(), self.row)
+        write!(f, "{}{}", self.column_name(), self.row + 1)
     }
 }
