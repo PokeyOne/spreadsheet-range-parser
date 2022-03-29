@@ -32,3 +32,25 @@ fn test_point_from_str() -> Result<(), String> {
     assert_eq!(Point::from_str("AAA7")?, Point::new(6, 702));
     Ok(())
 }
+
+#[test]
+fn test_point_with_no_row() -> Result<(), String> {
+    assert_eq!(Point::from_str("A")?, Point::new_opt(None, Some(0)));
+    assert_eq!(Point::from_str("ZZ")?, Point::new_opt(None, Some(701)));
+    assert_eq!(Point::from_str("AAA")?, Point::new_opt(None, Some(702)));
+    Ok(())
+}
+
+#[test]
+fn test_point_with_no_col() -> Result<(), String> {
+    assert_eq!(Point::from_str("1")?, Point::new_opt(Some(0), None));
+    assert_eq!(Point::from_str("701")?, Point::new_opt(Some(700), None));
+    assert_eq!(Point::from_str("702")?, Point::new_opt(Some(701), None));
+    Ok(())
+}
+
+#[test]
+#[should_panic]
+fn test_point_with_no_row_and_no_col() {
+    Point::new_opt(None, None);
+}

@@ -123,6 +123,10 @@ impl FromStr for Point {
         }
         let column_index = Point::column_name_to_index(&column_name)?;
 
+        if chars.peek().is_none() {
+            return Ok(Point::new_opt(None, column_index));
+        }
+
         let row = chars
             .collect::<String>()
             .parse::<usize>()
