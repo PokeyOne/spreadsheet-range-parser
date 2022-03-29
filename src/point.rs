@@ -10,14 +10,29 @@ use std::str::FromStr;
 /// `Point::new(0, 0)`. B2 would be `Point::new(1, 1)`.
 #[derive(Debug, PartialEq, Clone)]
 pub struct Point {
-    /// The row **index** of the cell.
-    pub row: usize,
-    /// The column **index** of the cell.
-    pub col: usize
+    /// The row **index** of the cell. Option is because some situations allow
+    /// for no row/column.
+    pub row: Option<usize>,
+    /// The column **index** of the cell. Option is because some situations
+    /// allow for no row/column.
+    pub col: Option<usize>
 }
 
 impl Point {
     pub fn new(row: usize, col: usize) -> Point {
+        Point { row: Some(row), col: Some(col) }
+    }
+
+    /// Create a new `Point` from optional row and column indices.
+    ///
+    /// # Panics
+    ///
+    /// Panics if both `row` and `col` are `None`.
+    pub fn new_opt(row: Option<usize>, col: Option<usize>) -> Point {
+        if row.is_none() && col.is_none() {
+            panic!("Cannot create a point with no row and no column.");
+        }
+
         Point { row, col }
     }
 
@@ -39,34 +54,44 @@ impl Point {
     /// assert_eq!(Point::new(0, 18277).column_name(), "ZZZ");
     /// ```
     pub fn column_name(&self) -> String {
-        let low_place = ((self.col % 26) as u8 + b'A') as char;
+        if let Some(col) = self.col {
+            let low_place = ((col % 26) as u8 + b'A') as char;
 
-        let mut stack = vec![low_place];
+            let mut stack = vec![low_place];
 
-        let mut col = self.col / 26;
-        while col > 0 {
-            let high_place = match col % 26 {
-                0 => b'Z',
-                _ => ((col - 1) % 26) as u8 + b'A'
-            } as char;
-            stack.push(high_place);
+            let mut col = col / 26;
+            while col > 0 {
+                let high_place = match col % 26 {
+                    0 => b'Z',
+                    _ => ((col - 1) % 26) as u8 + b'A'
+                } as char;
+                stack.push(high_place);
 
-            col -= (col - 1) % 26;
-            col /= 26;
+                col -= (col - 1) % 26;
+                col /= 26;
+            }
+
+            stack.reverse();
+            stack.into_iter().collect()
+        } else {
+            "".to_string()
         }
-
-        stack.reverse();
-        stack.into_iter().collect()
     }
 
-    pub fn column_name_to_index(name: &str) -> Result<usize, String> {
+    pub fn column_name_to_index(name: &str) -> Result<Option<usize>, String> {
         let mut value = 0;
 
         let mut chars = name.chars().rev();
         if let Some(first_char) = chars.next() {
+            let first_char = match first_char {
+                c if c.is_ascii_uppercase() => c,
+                c if c.is_ascii_lowercase() => c.to_ascii_uppercase(),
+                _ => return Err(format!("Invalid column name: {}", name))
+            };
+
             value += first_char as usize - 'A' as usize;
         } else {
-            return Err("Empty column name".to_string());
+            return Ok(None);
         }
 
         let mut current_place = 1;
@@ -75,7 +100,7 @@ impl Point {
             current_place += 1;
         }
 
-        Ok(value)
+        Ok(Some(value))
     }
 }
 
@@ -107,12 +132,17 @@ impl FromStr for Point {
             return Err("Row cannot be 0".to_string());
         }
 
-        Ok(Point::new(row - 1, column_index))
+        Ok(Point::new_opt(Some(row - 1), column_index))
     }
 }
 
 impl Display for Point {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        write!(f, "{}{}", self.column_name(), self.row + 1)
+        let row_name = match self.row {
+            Some(row) => format!("{}", row + 1),
+            None => "".to_string()
+        };
+
+        write!(f, "{}{}", self.column_name(), row_name)
     }
 }

@@ -18,10 +18,10 @@ fn test_point_display() {
 
 #[test]
 fn test_column_name_to_index() -> Result<(), String> {
-    assert_eq!(Point::column_name_to_index("A")?, 0);
-    assert_eq!(Point::column_name_to_index("B")?, 1);
-    assert_eq!(Point::column_name_to_index("ZZ")?, 701);
-    assert_eq!(Point::column_name_to_index("AAA")?, 702);
+    assert_eq!(Point::column_name_to_index("A")?, Some(0));
+    assert_eq!(Point::column_name_to_index("B")?, Some(1));
+    assert_eq!(Point::column_name_to_index("ZZ")?, Some(701));
+    assert_eq!(Point::column_name_to_index("AAA")?, Some(702));
     Ok(())
 }
 
