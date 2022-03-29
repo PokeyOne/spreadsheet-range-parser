@@ -28,6 +28,8 @@ use std::str::FromStr;
 
 // You can convert a string to a Rectangle
 assert_eq!(Rectangle::from_str("A1:B2"), Ok(Rectangle::new(Point::new(0, 0), Point::new(1, 1))));
+// You can also have infinite ranges.
+assert_eq!(Rectangle::from_str("A1:C"), Ok(Rectangle::new(Point::new(0, 0), Point { row: None, col: Some(2) })));
 
 // You can also convert a Rectangle to a string
 assert_eq!(Rectangle::new(Point::new(0, 0), Point::new(1, 1)).to_string(), "A1:B2");
